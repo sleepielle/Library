@@ -1,7 +1,6 @@
-﻿using Books.DTOS;
-using Books.Services;
+﻿using Books.Services;
+
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Books.Controllers
 {
@@ -11,8 +10,8 @@ namespace Books.Controllers
     {
 
         private readonly IAuthors authors;
-        private readonly sendMessage send;
-        public BooksController(IAuthors _authors, sendMessage _send)
+        private readonly Messages send;
+        public BooksController(IAuthors _authors, Messages _send)
         {
             authors = _authors;
             this.send = _send;
@@ -25,22 +24,22 @@ namespace Books.Controllers
             return await Task.FromResult(hola);
         }
 
-        [HttpGet("{authorId}")]
-        public async Task<IActionResult> GetAuthorInformation(int authorId)
-        {
-            var text = await this.authors.getAuthorsInformation(authorId);
+        //[HttpGet("{authorId}")]
+        //public async Task<IActionResult> GetAuthorInformation(int authorId)
+        //{
+        //    var text = await this.authors.getAuthorsInformation(authorId);
 
-            //GetBookInformation(authorId);
+        //    //GetBookInformation(authorId);
 
-            string book = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\books.json");
-            var json = JsonConvert.DeserializeObject<IEnumerable<BooksDataTransferObjects>>(book);
+        //    string book = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\books.json");
+        //    var json = JsonConvert.DeserializeObject<IEnumerable<BooksDataTransferObjects>>(book);
 
-            var bookInformation = json.SingleOrDefault(x => x.authorId == authorId);
+        //    var bookInformation = json.SingleOrDefault(x => x.authorId == authorId);
 
-            await send.send(text, bookInformation);
-            return Ok(new { BooksDataTransferObjects = bookInformation, AuthorsDataTransferObjects = text });
-            //mandando ambos elementos de respuesta.
-        }
+        //    await send.send(text, bookInformation);
+        //    return Ok(new { BooksDataTransferObjects = bookInformation, AuthorsDataTransferObjects = text });
+        //    //mandando ambos elementos de respuesta.
+        //}
 
 
 

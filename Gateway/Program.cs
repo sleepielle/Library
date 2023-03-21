@@ -1,4 +1,3 @@
-
 using Gateway.Controllers;
 using Gateway.Services;
 using Microsoft.AspNetCore.Mvc;

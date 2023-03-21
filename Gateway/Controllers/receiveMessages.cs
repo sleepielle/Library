@@ -25,7 +25,7 @@ namespace Gateway.Controllers
 
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
-            channel.QueueDeclare("information", false, false, false, null);
+            channel.QueueDeclare("sendCompleteInfo", false, false, false, null);
             consumer = new EventingBasicConsumer(channel);
         }
 
@@ -49,7 +49,7 @@ namespace Gateway.Controllers
                 files.writeFile(message, filepath);
             };
 
-            channel.BasicConsume("information", true, consumer);
+            channel.BasicConsume("sendCompleteInfo", true, consumer);
             return Task.CompletedTask;
         }
 

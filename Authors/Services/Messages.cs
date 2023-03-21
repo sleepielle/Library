@@ -1,12 +1,14 @@
-﻿using Books.DTOS;
+﻿using Authors.DTOS;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-namespace Books.Services
+namespace Authors.Services
 {
     public class Messages : BackgroundService
     {
+
 
         private readonly IConnection conn;
         private readonly IModel channel;
@@ -23,7 +25,7 @@ namespace Books.Services
 
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
-            channel.QueueDeclare("libro", false, false, false, null);
+            channel.QueueDeclare("sendingBookInfo", false, false, false, null);
             consumer = new EventingBasicConsumer(channel);
         }
 
@@ -34,17 +36,19 @@ namespace Books.Services
                 var body = content.Body.ToArray();
                 var json = Encoding.UTF8.GetString(body);
 
-                var message = JsonConvert.DeserializeObject<BooksIsbnDataTransferObject>(json);
+                var bookInfo = JsonConvert.DeserializeObject<BooksDataTransferObjects>(json);
+                Console.WriteLine("Mensaje recibido\n Id de autor:" + bookInfo.isbn.ToString());
 
-                string book = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\books.json");
-                var bookInfo = JsonConvert.DeserializeObject<IEnumerable<BooksDataTransferObjects>>(book);
+                string author = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\authors.json");
+                var authors = JsonConvert.DeserializeObject<IEnumerable<AuthorsDataTransferObjects>>(author);
 
-                var bookInformation = bookInfo.SingleOrDefault(x => x.isbn == message.isbn);
+                var authorInfo = authors.SingleOrDefault(x => x.id == bookInfo.authorId);
+                Console.WriteLine("Mensaje RECIBIDO: " + authorInfo.ToString());
 
-                await send(bookInformation);
+                await send(authorInfo, bookInfo);
             };
 
-            channel.BasicConsume("libro", true, consumer);
+            channel.BasicConsume("sendingBookInfo", true, consumer);
             return Task.CompletedTask;
         }
 
@@ -56,17 +60,19 @@ namespace Books.Services
                 await Task.Delay(1000, stoppingToken);
             }
         }
-        public Task send(BooksDataTransferObjects book)
+
+        public Task send(AuthorsDataTransferObjects author, BooksDataTransferObjects book)
         {
-            var queueName = "sendingBookInfo";
+            var queueName = "sendCompleteInfo";
 
-            //var parentObject = new JObject();
-            //parentObject.Add("author", JObject.FromObject(author));
-            //parentObject.Add("book", JObject.FromObject(book));
-            //var json = parentObject.ToString();
+            var parentObject = new JObject();
+            parentObject.Add("author", JObject.FromObject(author));
+            parentObject.Add("book", JObject.FromObject(book));
+            var json = parentObject.ToString();
 
 
-            var json = JsonConvert.SerializeObject(book);
+            var bodyJson = parentObject.ToString();
+
 
 
             var factory = new ConnectionFactory
@@ -78,15 +84,16 @@ namespace Books.Services
             using var conn = factory.CreateConnection();
             using var channel = conn.CreateModel();
             channel.QueueDeclare(queueName, false, false, false, null);
-            var body = Encoding.UTF8.GetBytes(json);
+            var body = Encoding.UTF8.GetBytes(bodyJson);
             channel.BasicPublish(string.Empty, queueName, null, body);
-            Console.WriteLine("Mensaje enviado: " + json.ToString());
+            Console.WriteLine("Mensaje enviado: " + bodyJson.ToString());
 
             return Task.CompletedTask;
 
 
 
         }
+
 
     }
 }

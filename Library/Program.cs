@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddHttpClient<IAuthors, Authors>();
-builder.Services.AddScoped<sendMessage>();
+builder.Services.AddHostedService<Messages>();
 builder.Services.AddControllers();
 var app = builder.Build();
 app.MapControllers();

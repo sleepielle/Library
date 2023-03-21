@@ -1,4 +1,4 @@
-﻿namespace Books.DTOS
+﻿namespace Authors.DTOS
 {
     public class CompleteBookInformation
     {
