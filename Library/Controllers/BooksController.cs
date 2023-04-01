@@ -1,48 +1,46 @@
-﻿using Books.Services;
+﻿//using Books.DTOS;
+//using Books.Services;
+//using Microsoft.AspNetCore.Mvc;
+//using Newtonsoft.Json;
 
-using Microsoft.AspNetCore.Mvc;
+//namespace Books.Controllers
+//{
+//    [ApiController]
+//    [Route("books")]
+//    public class BooksController : ControllerBase
+//    {
 
-namespace Books.Controllers
-{
-    [ApiController]
-    [Route("books")]
-    public class BooksController : ControllerBase
-    {
+//        private readonly IAuthors authors;
+//        private readonly Messages send;
+//        public BooksController(IAuthors _authors, Messages _send)
+//        {
+//            authors = _authors;
+//            this.send = _send;
+//        }
 
-        private readonly IAuthors authors;
-        private readonly Messages send;
-        public BooksController(IAuthors _authors, Messages _send)
-        {
-            authors = _authors;
-            this.send = _send;
-        }
+//        [HttpGet]
+//        public async Task<string> Get()
+//        {
+//            string hola = "hola";
+//            return await Task.FromResult(hola);
+//        }
 
-        [HttpGet]
-        public async Task<string> Get()
-        {
-            string hola = "hola";
-            return await Task.FromResult(hola);
-        }
+//        [HttpGet("{authorId}")]
+//        public async Task<IActionResult> GetAuthorInformation(int authorId)
+//        {
+//            var text = await this.authors.getAuthorsInformation(authorId);
 
-        //[HttpGet("{authorId}")]
-        //public async Task<IActionResult> GetAuthorInformation(int authorId)
-        //{
-        //    var text = await this.authors.getAuthorsInformation(authorId);
+//            //GetBookInformation(authorId);
 
-        //    //GetBookInformation(authorId);
+//            string book = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\books.json");
+//            var bookInfo = JsonConvert.DeserializeObject<IEnumerable<BooksDataTransferObjects>>(book);
 
-        //    string book = System.IO.File.ReadAllText("C:\\Users\\pggis\\source\\repos\\Concurrencia\\books.json");
-        //    var json = JsonConvert.DeserializeObject<IEnumerable<BooksDataTransferObjects>>(book);
-
-        //    var bookInformation = json.SingleOrDefault(x => x.authorId == authorId);
-
-        //    await send.send(text, bookInformation);
-        //    return Ok(new { BooksDataTransferObjects = bookInformation, AuthorsDataTransferObjects = text });
-        //    //mandando ambos elementos de respuesta.
-        //}
+//            var authorInfo = bookInfo.SingleOrDefault(x => x.authorId == text.id);
 
 
+//            return Ok(text);
+//        }
 
-    }
-}
+//    }
+//}
 

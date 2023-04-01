@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddHttpClient<IAuthors, Authors>();
 builder.Services.AddHostedService<Messages>();
+builder.Services.AddScoped<Messages>();
 builder.Services.AddControllers();
 var app = builder.Build();
 app.MapControllers();

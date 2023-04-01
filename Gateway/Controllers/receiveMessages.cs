@@ -25,7 +25,7 @@ namespace Gateway.Controllers
 
             conn = factory.CreateConnection();
             channel = conn.CreateModel();
-            channel.QueueDeclare("sendCompleteInfo", false, false, false, null);
+            channel.QueueDeclare("sendingBookInfo", false, false, false, null);
             consumer = new EventingBasicConsumer(channel);
         }
 
@@ -38,18 +38,17 @@ namespace Gateway.Controllers
                 var json = Encoding.UTF8.GetString(body);
 
                 var message = JsonConvert.DeserializeObject<CompleteBookInformation>(json);
+
+
                 Console.WriteLine("Mensaje recibido\n First name" + message.author.first_name
                     + "Title : " + message.book.title);
 
-                // Get the file path from the Files class
-                //  await Task.Delay(2000);
                 string filepath = files.GetFilePath();
 
-                // Write the book information to the file
                 files.writeFile(message, filepath);
             };
 
-            channel.BasicConsume("sendCompleteInfo", true, consumer);
+            channel.BasicConsume("sendingBookInfo", true, consumer);
             return Task.CompletedTask;
         }
 

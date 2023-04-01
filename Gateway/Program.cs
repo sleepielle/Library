@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHostedService<receiveMessages>();
+builder.Services.AddScoped<receiveMessages>();
 builder.Services.AddSingleton<IFiles, Files>();
 builder.Services.AddControllers();
 var app = builder.Build();
